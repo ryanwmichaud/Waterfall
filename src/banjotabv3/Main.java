@@ -12,7 +12,11 @@ import banjotabv3.Generator.NoteNames;
 
 //working pretty well! I think that after an open string, we should have lastFret still be saved as last fret. 
 //also need to translate choices into n string tab! already have a lot of the functions to do it I think. 
+//maybe if lastOPen is true, we keep the same last fret but increas the max jump distance
+
 //consider saving one string on multi-line tab that we translate to multiple strings... so like storing 1a2a3a4a5a1b2b3b4b5b1c2c3c4c5c rather than 1a1b1c and 2a2b2c and 3a3b3c and so on. might actually be more work and less efficient... 
+
+
 public class Main {
 
 	
@@ -24,7 +28,7 @@ public class Main {
 			return sofar;
 		} 
 		
-		System.out.println(sofar+"checking string "+curr+" last open is "+lastOpen);
+		System.out.print("\n"+sofar+"checking string "+curr+", last open is "+lastOpen+",   ");
 		
 		
 		
@@ -33,26 +37,23 @@ public class Main {
 		}
 		
 
-		
 		int jump=0;    //fig out the jump if not coming from open 
 		try {
 			int potFret = (sts.get(curr).getFret(noteList.get(sofar.size())));
 			if(!lastOpen && (potFret!=0))  { //jump stays zero if last is 0
 				
 				
-				jump = potFret-lastFret;
+				jump = potFret-lastFret;	//abs value of the difference
 				if(jump<0) {
 					jump*=-1;
 				}
-				System.out.println(potFret+" from "+lastFret+" jump is "+jump);
+				System.out.print(potFret+" from "+lastFret+" jump is "+jump);
 				
 				
 			}
 		}catch(IndexOutOfBoundsException e) {
-			System.out.println("either first or out of strings. leaving jump as 0");
+			System.out.print("either first or out of strings. leaving jump as 0");
 		}
-		
-		
 		
 		
 		if((sts.get(curr).getFret(noteList.get(sofar.size()))!=-1) 						//if note can be found on that string,
@@ -60,15 +61,12 @@ public class Main {
 				&&(((sofar.size())==0) || (curr!=sofar.get(sofar.size()-1)) )    ) {	//and not same string as previous. (or no previous yet)
 			
 			
-			
-			
-			
 			ArrayList<Integer>sofarPlusCurr = new ArrayList<Integer>(sofar);
 			sofarPlusCurr.add(curr);
 			int potFret = (sts.get(curr).getFret(noteList.get(sofar.size()))) ;
 			boolean thisOpen = false;
 			
-			if((sofar.size()==0)|| ((lastOpen==false)&&(potFret==0))) {
+			if((sofar.size()==0) || ((lastOpen==false)&&(potFret==0))) {
 				thisOpen=true;	
 			}
 			

@@ -1,11 +1,12 @@
-D5 E5 Gb5 G5 A5 
-Gb5 G5 A5 B5 A5 G5 Gb5 
-D5 E5 Gb5 
+Bb5 C6 Db6 A5 Bb5 A5 Ab5 A5 C6 Bb5 Gb5 
 
-G5  B5 G5
-Gb5  A5 Gb5 
+F5 Gb5 E5 F5 
 
-E5 Gb5 E5 D5 Db5
-A4 B4 Db5 
-D5
+Bb5 A5 Ab5 G5 
+Gb5 F5 E5 Eb5 
+
+
+D5 Db5 C5 Db5 
+C5 B4  C5 F5 
+E5 Eb5 Db5 
 
