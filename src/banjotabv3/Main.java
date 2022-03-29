@@ -9,11 +9,89 @@ import java.util.Scanner;
 
 import banjotabv3.Generator.NoteNames;
 
+
+//working pretty well! I think that after an open string, we should have lastFret still be saved as last fret. 
+//also need to translate choices into n string tab! already have a lot of the functions to do it I think. 
+//consider saving one string on multi-line tab that we translate to multiple strings... so like storing 1a2a3a4a5a1b2b3b4b5b1c2c3c4c5c rather than 1a1b1c and 2a2b2c and 3a3b3c and so on. might actually be more work and less efficient... 
 public class Main {
 
+	
+	public static ArrayList<Integer> backtrack(ArrayList<String> noteList, ArrayList<St> sts, int curr, ArrayList<Integer> sofar, boolean lastOpen,int lastFret) { //notetoget is like colum - its the length of sofar!!!
+		
+		if(sofar.size()==noteList.size()) { //if picked for all notes to pick, 
+			System.out.println(sofar + " we should be done here");
+			int x  = 4/0; //force a stop
+			return sofar;
+		} 
+		
+		System.out.println(sofar+"checking string "+curr+" last open is "+lastOpen);
+		
+		
+		
+		if(curr==sts.size()){ //if for the current note, we've checked all the strings. so 0-4 strings and were at 5
+			return null; //then fail so we can give up on this dead end
+		}
+		
+
+		
+		int jump=0;    //fig out the jump if not coming from open 
+		try {
+			int potFret = (sts.get(curr).getFret(noteList.get(sofar.size())));
+			if(!lastOpen && (potFret!=0))  { //jump stays zero if last is 0
+				
+				
+				jump = potFret-lastFret;
+				if(jump<0) {
+					jump*=-1;
+				}
+				System.out.println(potFret+" from "+lastFret+" jump is "+jump);
+				
+				
+			}
+		}catch(IndexOutOfBoundsException e) {
+			System.out.println("either first or out of strings. leaving jump as 0");
+		}
+		
+		
+		
+		
+		if((sts.get(curr).getFret(noteList.get(sofar.size()))!=-1) 						//if note can be found on that string,
+				&&(jump<4) 																//and not too big jump, 
+				&&(((sofar.size())==0) || (curr!=sofar.get(sofar.size()-1)) )    ) {	//and not same string as previous. (or no previous yet)
+			
+			
+			
+			
+			
+			ArrayList<Integer>sofarPlusCurr = new ArrayList<Integer>(sofar);
+			sofarPlusCurr.add(curr);
+			int potFret = (sts.get(curr).getFret(noteList.get(sofar.size()))) ;
+			boolean thisOpen = false;
+			
+			if((sofar.size()==0)|| ((lastOpen==false)&&(potFret==0))) {
+				thisOpen=true;	
+			}
+			
+			
+			
+			
+			
+			if(backtrack(noteList, sts, 0,sofarPlusCurr,thisOpen ,potFret ) != null ) { //if calling it on current doesnt fail
+				
+				return backtrack(noteList, sts, curr,sofarPlusCurr,thisOpen,potFret );//return the call! that's the one!
+			}else {
+				backtrack(noteList, sts, curr+1,sofar,lastOpen,lastFret  );	//if it failed, go to next curr
+			}
+		}
+		
+		return backtrack(noteList, sts, curr+1,sofar,lastOpen,lastFret  );	//if it failed, go to next curr
+		
+	}
+	
+
 	public static void main(String args[]) {
-		ArrayList<Note> noteList = new ArrayList<Note>();
-		ListIterator<Note> noteIt = noteList.listIterator();
+		ArrayList<String> noteList = new ArrayList<String>();
+		//ListIterator<Note> noteIt = noteList.listIterator();
 
 		Generator gen =new Generator();
 		String fName=args[0];
@@ -40,29 +118,25 @@ public class Main {
 		
 		gen.printSts(sts);
 		
-		try {
+		try { //make list of notes 
 			Scanner scan = new Scanner(new File(fName));
 			
 			while (scan.hasNext()) {
 				String currentNoteName=scan.next();									//next note
 
-				Note currentNote = new Note(currentNoteName, gen.prevSt,gen.prevFret);				//make+save note object w the choices sorted
-				noteIt.add(currentNote); 
-				
-				
+				//Note currentNote = new Note(currentNoteName, gen.prevSt,gen.prevFret);				//make+save note object w the choices sorted
+				noteList.add(currentNoteName);
+				//noteIt.add(currentNote); 			
 			}
-			
-			gen.printTab(sts);
-			System.out.println("\n");
-			
-			
-			
+			System.out.println(noteList);
+			//gen.printTab(sts);
+			//System.out.println("\n");
 		}
 			catch(FileNotFoundException e){
 				System.out.println("File Not Found");
 			}
-		
-	
+		ArrayList<Integer> choices = new ArrayList<Integer>();
+		System.out.println(backtrack(noteList, sts, 0, choices,true,0));
 	}
 }
 
