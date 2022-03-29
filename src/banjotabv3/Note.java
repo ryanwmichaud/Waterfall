@@ -12,16 +12,14 @@ public class Note {
 	
 	
 	
-	public Note(String name,ArrayList<Integer> choices,ArrayList<Integer> rankings,int prevSt,	int prevFret){ 
+	public Note(String name, int prevSt,	int prevFret){ 
 		//choices is list of fret choices in order from 1rst to fifth string 
 		//rankings is a list of the strings indices in order from best to worst
 		//System.out.println("created note and choices are "+choices.toString()+" and rankings are " + rankings.toString());
 		this.name=name;
 		this.prevFret=prevFret;
 		this.prevSt=prevSt;
-		for(int best:rankings) {					//go through list of best to worst. put corresp frets into choices. 
-			this.stChoices.add((best));
-		}
+		
 		//System.out.println("created note "+ this.name+ " and real best string choices are "+ this.stChoices.toString());
 	}
 	public void putBestBack(int best) {
