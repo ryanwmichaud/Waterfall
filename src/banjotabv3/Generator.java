@@ -8,6 +8,8 @@ public class Generator {
 	
 	int prevFret;
 	int prevSt;
+	ArrayList<ArrayList<Integer>> solutions = new ArrayList<ArrayList<Integer>>();
+	
 	
 	public enum NoteNames{
 		C,Db,D,Eb,E,F,Gb,G,Ab,A,Bb,B

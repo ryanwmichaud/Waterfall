@@ -20,11 +20,12 @@ import banjotabv3.Generator.NoteNames;
 public class Main {
 
 	
-	public static ArrayList<Integer> backtrack(ArrayList<String> noteList, ArrayList<St> sts, int curr, ArrayList<Integer> sofar, boolean lastOpen,int lastFret) { //notetoget is like colum - its the length of sofar!!!
+	public static ArrayList<Integer> backtrack(Generator gen, ArrayList<String> noteList, ArrayList<St> sts, int curr, ArrayList<Integer> sofar, boolean lastOpen,int lastFret) { //notetoget is like colum - its the length of sofar!!!
 		
 		if(sofar.size()==noteList.size()) { //if picked for all notes to pick, 
 			System.out.println(sofar + " we should be done here");
-			int x  = 4/0; //force a stop
+			//int x  = 4/0; //force a stop
+			gen.solutions.add(sofar);
 			return sofar;
 		} 
 		
@@ -57,7 +58,7 @@ public class Main {
 		
 		
 		if((sts.get(curr).getFret(noteList.get(sofar.size()))!=-1) 						//if note can be found on that string,
-				&&(jump<4) 																//and not too big jump, 
+				&&(jump<3) 																//and not too big jump, 
 				&&(((sofar.size())==0) || (curr!=sofar.get(sofar.size()-1)) )    ) {	//and not same string as previous. (or no previous yet)
 			
 			
@@ -66,7 +67,7 @@ public class Main {
 			int potFret = (sts.get(curr).getFret(noteList.get(sofar.size()))) ;
 			boolean thisOpen = false;
 			
-			if((sofar.size()==0) || ((lastOpen==false)&&(potFret==0))) {
+			if((potFret==0) || (sofar.size()==0)) { 	//consider it open if its open or the first choice
 				thisOpen=true;	
 			}
 			
@@ -74,15 +75,15 @@ public class Main {
 			
 			
 			
-			if(backtrack(noteList, sts, 0,sofarPlusCurr,thisOpen ,potFret ) != null ) { //if calling it on current doesnt fail
+			if(backtrack( gen, noteList, sts, 0,sofarPlusCurr,thisOpen ,potFret ) != null ) { //if calling it on current doesnt fail
 				
-				return backtrack(noteList, sts, curr,sofarPlusCurr,thisOpen,potFret );//return the call! that's the one!
+				return backtrack( gen, noteList, sts, curr,sofarPlusCurr,thisOpen,potFret );//return the call! that's the one!
 			}else {
-				backtrack(noteList, sts, curr+1,sofar,lastOpen,lastFret  );	//if it failed, go to next curr
+				backtrack( gen, noteList, sts, curr+1,sofar,lastOpen,lastFret  );	//if it failed, go to next curr
 			}
 		}
 		
-		return backtrack(noteList, sts, curr+1,sofar,lastOpen,lastFret  );	//if it failed, go to next curr
+		return backtrack( gen, noteList, sts, curr+1,sofar,lastOpen,lastFret  );	//if it failed, go to next curr
 		
 	}
 	
@@ -134,7 +135,9 @@ public class Main {
 				System.out.println("File Not Found");
 			}
 		ArrayList<Integer> choices = new ArrayList<Integer>();
-		System.out.println(backtrack(noteList, sts, 0, choices,true,0));
+		System.out.println(backtrack(gen, noteList, sts, 0, choices,true,0));
+		System.out.println("There are "+gen.solutions.size()+" possible ways with your constraints");
+		System.out.println(gen.solutions);
 	}
 }
 
