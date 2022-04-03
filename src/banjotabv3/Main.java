@@ -18,14 +18,21 @@ import banjotabv3.Generator.NoteNames;
 
 
 public class Main {
+	
+	public static void printSts(ArrayList<St> sts) {
+		for(St s:sts) {
+			s.printSt();
+		}
+		System.out.println("\n");
+	}
 
 	
-	public static ArrayList<Integer> backtrack(Generator gen, ArrayList<String> noteList, ArrayList<St> sts, int curr, ArrayList<Integer> sofar, boolean lastOpen,int lastFret) { //notetoget is like colum - its the length of sofar!!!
+	public static ArrayList<Integer> backtrack(ArrayList<String> noteList, ArrayList<St> sts, int curr, ArrayList<Integer> sofar, boolean lastOpen,int lastFret) { //notetoget is like colum - its the length of sofar!!!
 		
 		if(sofar.size()==noteList.size()) { //if picked for all notes to pick, 
 			System.out.println(sofar + " we should be done here");
 			//int x  = 4/0; //force a stop
-			gen.solutions.add(sofar);
+			
 			return sofar;
 		} 
 		
@@ -62,7 +69,7 @@ public class Main {
 				&&(((sofar.size())==0) || (curr!=sofar.get(sofar.size()-1)) )    ) {	//and not same string as previous. (or no previous yet)
 			
 			
-			ArrayList<Integer>sofarPlusCurr = new ArrayList<Integer>(sofar);
+			ArrayList<Integer>sofarPlusCurr = new ArrayList<Integer>(sofar);   
 			sofarPlusCurr.add(curr);
 			int potFret = (sts.get(curr).getFret(noteList.get(sofar.size()))) ;
 			boolean thisOpen = false;
@@ -72,19 +79,35 @@ public class Main {
 			}
 			
 			
-			
-			
-			
-			if(backtrack( gen, noteList, sts, 0,sofarPlusCurr,thisOpen ,potFret ) != null ) { //if calling it on current doesnt fail
-				
-				return backtrack( gen, noteList, sts, curr,sofarPlusCurr,thisOpen,potFret );//return the call! that's the one!
+			if(backtrack( noteList, sts, 0 ,sofarPlusCurr,thisOpen ,potFret ) != null ) { //if calling it on current doesnt fail
+				//setting curr to curr instead of zero on the line below gave all possible
+				return backtrack( noteList, sts, 0,sofarPlusCurr,thisOpen,potFret );//return the call! that's the one!
 			}else {
-				backtrack( gen, noteList, sts, curr+1,sofar,lastOpen,lastFret  );	//if it failed, go to next curr
+				backtrack( noteList, sts, curr+1,sofar,lastOpen,lastFret  );	//if it failed, go to next curr
 			}
 		}
 		
-		return backtrack( gen, noteList, sts, curr+1,sofar,lastOpen,lastFret  );	//if it failed, go to next curr
+		return backtrack(  noteList, sts, curr+1,sofar,lastOpen,lastFret  );	//if it failed, go to next curr
 		
+	}
+	
+	public static void makeChoice(ArrayList<St> sts,  int strChoice, String note) {
+		int i = 0;
+		for(St s:sts) {
+			
+			if(i==strChoice) {				//only choose first choice
+				s.choose(s.getFret(note));
+			}else {
+				s.notChoose();
+			}
+			i++;
+		}
+	}
+	
+	public static void printTab(ArrayList<St> sts) {
+		for(St s:sts) {
+			s.printStTab();
+		}
 	}
 	
 
@@ -92,7 +115,7 @@ public class Main {
 		ArrayList<String> noteList = new ArrayList<String>();
 		//ListIterator<Note> noteIt = noteList.listIterator();
 
-		Generator gen =new Generator();
+		
 		String fName=args[0];
 		
 		ArrayList<St> sts= new ArrayList<St>();  //make the strings 
@@ -115,29 +138,30 @@ public class Main {
 		sts.add(fourthSt);	
 		sts.add(fifthSt);
 		
-		gen.printSts(sts);
+		printSts(sts);
 		
 		try { //make list of notes 
 			Scanner scan = new Scanner(new File(fName));
 			
 			while (scan.hasNext()) {
 				String currentNoteName=scan.next();									//next note
-
-				//Note currentNote = new Note(currentNoteName, gen.prevSt,gen.prevFret);				//make+save note object w the choices sorted
-				noteList.add(currentNoteName);
-				//noteIt.add(currentNote); 			
+				noteList.add(currentNoteName);		
 			}
 			System.out.println(noteList);
-			//gen.printTab(sts);
-			//System.out.println("\n");
+			
 		}
 			catch(FileNotFoundException e){
 				System.out.println("File Not Found");
 			}
-		ArrayList<Integer> choices = new ArrayList<Integer>();
-		System.out.println(backtrack(gen, noteList, sts, 0, choices,true,0));
-		System.out.println("There are "+gen.solutions.size()+" possible ways with your constraints");
-		System.out.println(gen.solutions);
+		ArrayList<Integer> chosenOnes = new ArrayList<Integer>();
+		chosenOnes = backtrack(noteList, sts, 0, chosenOnes,true,0);
+		
+		int i=0;
+		for (String n:noteList) {					//put choices in each Sts tab
+			makeChoice(sts,chosenOnes.get(i),n);
+			i++;
+		}
+		printTab(sts);
 	}
 }
 

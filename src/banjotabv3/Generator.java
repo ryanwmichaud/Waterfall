@@ -80,26 +80,15 @@ public class Generator {
 		}
 	}
 	
-	public void makeChoice(ArrayList<St> sts, ArrayList<Integer> choices, int strChoice) {
+	public void makeChoice(ArrayList<St> sts,  int strChoice, String note) {
 		int i = 0;
 		for(St s:sts) {
-			//*****************************
 			
-			if(i==strChoice) {
-				s.choose(choices.get(i));
+			if(i==strChoice) {				//only choose first choice
+				s.choose(s.getFret(note));
 			}else {
 				s.notChoose();
 			}
-			
-			//*****************************
-			/*
-			if(choices.get(i)!=-1) {
-				s.choose(choices.get(i));
-			}else {
-				s.notChoose();
-			}
-			*/
-			//******************************
 			i++;
 		}
 	}

@@ -1,5 +1,5 @@
 package banjotabv3;
-
+/*
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
@@ -65,7 +65,7 @@ public class Note {
 		}
 	}
 }
-
+*/
 
 /*
 import banjotabv2.Main.NoteNames;
