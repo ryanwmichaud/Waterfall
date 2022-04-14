@@ -78,10 +78,9 @@ public class Main {
 				thisOpen=true;	
 			}
 			
-			
-			if(backtrack( noteList, sts, 0 ,sofarPlusCurr,thisOpen ,potFret ) != null ) { //if calling it on current doesnt fail
-				//setting curr to curr instead of zero on the line below gave all possible
-				return backtrack( noteList, sts, 0,sofarPlusCurr,thisOpen,potFret );//return the call! that's the one!
+			ArrayList<Integer> check = backtrack( noteList, sts, 0 ,sofarPlusCurr,thisOpen ,potFret ); //save it so we only do this check once
+			if(check != null ) { //if calling it on current doesnt fail
+				return check;//return the call! that's the one!
 			}else {
 				backtrack( noteList, sts, curr+1,sofar,lastOpen,lastFret  );	//if it failed, go to next curr
 			}
